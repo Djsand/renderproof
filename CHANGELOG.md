@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0
+
+- Added `renderproof install` helper for Codex, Claude Code, Cursor, Windsurf, Cline, Gemini CLI, and generic MCP JSON.
+- Added safe dry-run install output by default, with explicit `--apply`, `--write-project`, and `--write-user` mutation modes.
+- Added `docs/installation.md` with agent-specific setup instructions.
+- Added npm `prepare` build hook for easier package/GitHub installs.
+
 ## 0.3.0
 
 - Renamed the project to RenderProof and package to `renderproof-mcp`.

@@ -95,32 +95,50 @@ That is the difference between "there is an animation" and "recreate this with t
 git clone https://github.com/Djsand/renderproof.git
 cd renderproof
 npm install
-npm run build
 npx playwright install chromium
 ```
 
+Then install it into your coding agent:
+
+```bash
+node dist/index.js install
+```
+
+One-liners:
+
+```bash
+node dist/index.js install codex --apply
+node dist/index.js install claude --apply
+node dist/index.js install cursor --write-project
+node dist/index.js install cline --write-user
+node dist/index.js install windsurf --write-user
+node dist/index.js install gemini --apply --scope user
+```
+
+See [docs/installation.md](docs/installation.md) for agent-specific setup.
+
 ## Use With Codex
+
+```bash
+node dist/index.js install codex --apply
+```
+
+Manual equivalent:
 
 ```bash
 codex mcp add renderproof -- node /absolute/path/to/renderproof/dist/index.js mcp
 ```
 
-Example for this checkout:
-
-```bash
-codex mcp add renderproof -- node /Users/nicolai/Documents/vibeos/dist/index.js mcp
-```
-
 ## Use With Claude Code
 
 ```bash
-claude mcp add renderproof -- node /absolute/path/to/renderproof/dist/index.js mcp
+node dist/index.js install claude --apply
 ```
 
-Project-local example:
+Manual equivalent:
 
 ```bash
-claude mcp add renderproof -- node /Users/nicolai/Documents/vibeos/dist/index.js mcp
+claude mcp add renderproof -- node /absolute/path/to/renderproof/dist/index.js mcp
 ```
 
 ## Use As CLI
@@ -132,6 +150,7 @@ npm run dev -- capture https://example.com --full-page
 npm run dev -- capture https://example.com --full-page --auto-scroll
 npm run dev -- motion https://example.com --duration 5000 --keyframes true
 npm run dev -- analyze-motion https://example.com --duration 3000 --samples 5
+npm run dev -- install generic --json
 npm run doctor
 ```
 

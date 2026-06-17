@@ -1,6 +1,6 @@
 {
   "name": "renderproof-mcp",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Rendered web evidence for coding agents: screenshots, motion analysis, CSS animation metadata, and audit trails via MCP.",
   "type": "module",
   "bin": {
@@ -10,14 +10,17 @@
   "files": [
     "dist",
     "README.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "LICENSE",
+    "docs"
   ],
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js mcp",
     "typecheck": "tsc --noEmit",
-    "doctor": "tsx src/index.ts doctor"
+    "doctor": "tsx src/index.ts doctor",
+    "prepare": "npm run build"
   },
   "keywords": [
     "mcp",

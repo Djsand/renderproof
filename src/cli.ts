@@ -1,6 +1,7 @@
 import { captureMotion, capturePage } from "./core/browser.js";
 import { getRuntimeConfig } from "./core/config.js";
 import { doctor } from "./core/doctor.js";
+import { printInstallHelp, runInstallAssistant, type InstallAgent, type InstallMode } from "./core/install.js";
 import { analyzeMotion } from "./core/motionAnalysis.js";
 import { readUrl, type ReadStrategy } from "./core/readers.js";
 import { routeWebTask } from "./core/router.js";
@@ -17,6 +18,28 @@ export async function runCli(args: string[]): Promise<number> {
   const config = getRuntimeConfig();
 
   try {
+    if (command === "install") {
+      const { positional, flags } = parseArgs(rest);
+      const rawAgent = positional[0] ?? "all";
+
+      if (rawAgent === "help" || flags.help || flags.h) {
+        printInstallHelp();
+        return 0;
+      }
+
+      return runInstallAssistant({
+        agent: rawAgent as InstallAgent,
+        apply: booleanFlag(flags.apply),
+        writeProject: booleanFlag(flags["write-project"]),
+        writeUser: booleanFlag(flags["write-user"]),
+        jsonOnly: booleanFlag(flags.json),
+        name: stringFlag(flags.name),
+        entrypoint: stringFlag(flags.entry),
+        mode: stringFlag(flags.mode) as InstallMode | undefined,
+        scope: stringFlag(flags.scope) as "local" | "user" | "project" | undefined
+      });
+    }
+
     if (command === "route") {
       const { positional, flags } = parseArgs(rest);
       const task = positional.join(" ").trim();
@@ -164,6 +187,7 @@ Usage:
   renderproof motion https://example.com [--duration 5000] [--keyframes true] [--scroll]
   renderproof analyze-motion https://example.com [--duration 3000] [--samples 5] [--scroll]
   renderproof doctor [--check-browser-launch]
+  renderproof install [all|codex|claude|cursor|windsurf|cline|gemini|generic]
 
 Environment:
   RENDERPROOF_ALLOWED_HOSTS=example.com,*.example.org

@@ -14,7 +14,7 @@ export async function startMcpServer(): Promise<void> {
   const config = getRuntimeConfig();
   const server = new McpServer({
     name: "renderproof-mcp",
-    version: "0.3.0"
+    version: "0.4.0"
   });
 
   server.registerTool(
