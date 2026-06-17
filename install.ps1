@@ -43,12 +43,15 @@ function Require-Command {
 }
 
 function Invoke-Native {
-  param(
-    [Parameter(Mandatory = $true)]
-    [string]$Command,
-    [Parameter(ValueFromRemainingArguments = $true)]
-    [string[]]$Arguments
-  )
+  if ($args.Count -lt 1) {
+    throw "Invoke-Native requires a command."
+  }
+
+  $Command = [string]$args[0]
+  $Arguments = @()
+  if ($args.Count -gt 1) {
+    $Arguments = @($args[1..($args.Count - 1)])
+  }
 
   & $Command @Arguments
   if ($LASTEXITCODE -ne 0) {

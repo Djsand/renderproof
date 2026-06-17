@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.4
+
+- Fixed Windows PowerShell installer argument parsing for native commands like `git -C`.
+
 ## 0.4.3
 
 - Changed one-line Codex install to write `~/.codex/config.toml` directly instead of relying on `codex mcp add`.
