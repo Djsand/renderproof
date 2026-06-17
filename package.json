@@ -1,0 +1,56 @@
+{
+  "name": "renderproof-mcp",
+  "version": "0.3.0",
+  "description": "Rendered web evidence for coding agents: screenshots, motion analysis, CSS animation metadata, and audit trails via MCP.",
+  "type": "module",
+  "bin": {
+    "renderproof": "./dist/index.js",
+    "grounded-web-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js mcp",
+    "typecheck": "tsc --noEmit",
+    "doctor": "tsx src/index.ts doctor"
+  },
+  "keywords": [
+    "mcp",
+    "browser",
+    "playwright",
+    "web",
+    "agent",
+    "screenshots",
+    "motion",
+    "vision"
+  ],
+  "homepage": "https://github.com/Djsand/renderproof#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Djsand/renderproof.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Djsand/renderproof/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "playwright": "^1.61.0",
+    "pngjs": "^7.0.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.2",
+    "@types/pngjs": "^6.0.5",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
