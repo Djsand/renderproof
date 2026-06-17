@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.5
+
+- Reworked the Windows installer to run native commands inside scriptblocks so PowerShell cannot bind native flags as function parameters.
+
 ## 0.4.4
 
 - Fixed Windows PowerShell installer argument parsing for native commands like `git -C`.

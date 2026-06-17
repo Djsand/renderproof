@@ -42,20 +42,12 @@ function Require-Command {
   }
 }
 
-function Invoke-Native {
-  if ($args.Count -lt 1) {
-    throw "Invoke-Native requires a command."
-  }
+function Invoke-Step {
+  param([string]$Label, [scriptblock]$Script)
 
-  $Command = [string]$args[0]
-  $Arguments = @()
-  if ($args.Count -gt 1) {
-    $Arguments = @($args[1..($args.Count - 1)])
-  }
-
-  & $Command @Arguments
+  & $Script
   if ($LASTEXITCODE -ne 0) {
-    throw "Command failed with exit code ${LASTEXITCODE}: $Command $($Arguments -join ' ')"
+    throw "Command failed with exit code ${LASTEXITCODE}: $Label"
   }
 }
 
@@ -78,21 +70,21 @@ if (-not [int]::TryParse([string]$NodeMajor, [ref]$ParsedNodeMajor) -or $ParsedN
 $GitDir = Join-Path $RenderProofHome ".git"
 if (Test-Path $GitDir) {
   Write-Host "Updating RenderProof in $RenderProofHome"
-  Invoke-Native git -C $RenderProofHome fetch --depth 1 origin $RenderProofBranch
-  Invoke-Native git -C $RenderProofHome checkout $RenderProofBranch
-  Invoke-Native git -C $RenderProofHome reset --hard "origin/$RenderProofBranch"
+  Invoke-Step "git fetch" { & git -C $RenderProofHome fetch --depth 1 origin $RenderProofBranch }
+  Invoke-Step "git checkout" { & git -C $RenderProofHome checkout $RenderProofBranch }
+  Invoke-Step "git reset" { & git -C $RenderProofHome reset --hard "origin/$RenderProofBranch" }
 } elseif (Test-Path $RenderProofHome) {
   Write-Error "$RenderProofHome exists but is not a git checkout. Set RENDERPROOF_HOME to another path."
 } else {
   Write-Host "Installing RenderProof into $RenderProofHome"
-  Invoke-Native git clone --depth 1 --branch $RenderProofBranch $RenderProofRepoUrl $RenderProofHome
+  Invoke-Step "git clone" { & git clone --depth 1 --branch $RenderProofBranch $RenderProofRepoUrl $RenderProofHome }
 }
 
 Push-Location $RenderProofHome
 try {
-  Invoke-Native npm install
-  Invoke-Native npx playwright install chromium
-  Invoke-Native npm run build
+  Invoke-Step "npm install" { & npm install }
+  Invoke-Step "npx playwright install chromium" { & npx playwright install chromium }
+  Invoke-Step "npm run build" { & npm run build }
 } finally {
   Pop-Location
 }
@@ -101,33 +93,33 @@ $Entry = Join-Path $RenderProofHome "dist/index.js"
 
 switch ($Target) {
   "codex" {
-    Invoke-Native node $Entry install codex --write-user --entry $Entry @RemainingArgs
+    Invoke-Step "renderproof install codex" { & node $Entry install codex --write-user --entry $Entry @RemainingArgs }
   }
   "claude" {
-    Invoke-Native node $Entry install claude --apply --entry $Entry @RemainingArgs
+    Invoke-Step "renderproof install claude" { & node $Entry install claude --apply --entry $Entry @RemainingArgs }
   }
   "cursor" {
     Push-Location $OriginalCwd
     try {
-      Invoke-Native node $Entry install cursor --write-project --entry $Entry @RemainingArgs
+      Invoke-Step "renderproof install cursor" { & node $Entry install cursor --write-project --entry $Entry @RemainingArgs }
     } finally {
       Pop-Location
     }
   }
   "cline" {
-    Invoke-Native node $Entry install cline --write-user --entry $Entry @RemainingArgs
+    Invoke-Step "renderproof install cline" { & node $Entry install cline --write-user --entry $Entry @RemainingArgs }
   }
   "windsurf" {
-    Invoke-Native node $Entry install windsurf --write-user --entry $Entry @RemainingArgs
+    Invoke-Step "renderproof install windsurf" { & node $Entry install windsurf --write-user --entry $Entry @RemainingArgs }
   }
   "gemini" {
-    Invoke-Native node $Entry install gemini --apply --scope user --entry $Entry @RemainingArgs
+    Invoke-Step "renderproof install gemini" { & node $Entry install gemini --apply --scope user --entry $Entry @RemainingArgs }
   }
   "generic" {
-    Invoke-Native node $Entry install generic --json --entry $Entry @RemainingArgs
+    Invoke-Step "renderproof install generic" { & node $Entry install generic --json --entry $Entry @RemainingArgs }
   }
   { $_ -in @("print", "all") } {
-    Invoke-Native node $Entry install all --entry $Entry @RemainingArgs
+    Invoke-Step "renderproof install all" { & node $Entry install all --entry $Entry @RemainingArgs }
   }
   default {
     Write-Error "Unknown target: $Target. Run with target 'help' to see supported targets."
