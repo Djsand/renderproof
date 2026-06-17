@@ -91,6 +91,16 @@ That is the difference between "there is an animation" and "recreate this with t
 
 ## Install
 
+One-liner:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- codex
+```
+
+Swap `codex` for `claude`, `cursor`, `cline`, `windsurf`, `gemini`, or `generic`.
+
+Manual install:
+
 ```bash
 git clone https://github.com/Djsand/renderproof.git
 cd renderproof
@@ -105,6 +115,17 @@ node dist/index.js install
 ```
 
 One-liners:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- codex
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- claude
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- cursor
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- cline
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- windsurf
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- gemini
+```
+
+Local helper equivalents:
 
 ```bash
 node dist/index.js install codex --apply

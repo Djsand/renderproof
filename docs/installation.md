@@ -1,6 +1,35 @@
 # Installing RenderProof In Coding Agents
 
-RenderProof runs as a local stdio MCP server. The fastest reliable setup is:
+RenderProof runs as a local stdio MCP server.
+
+## One-Liner
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- codex
+```
+
+Swap the final target:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- claude
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- cursor
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- cline
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- windsurf
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- gemini
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- generic
+```
+
+The one-liner installs or updates RenderProof in:
+
+```text
+~/.renderproof
+```
+
+Then it runs the matching install helper for the target agent. For `cursor`, the script writes `.cursor/mcp.json` in the directory where you ran the one-liner.
+
+## Manual Install
+
+The manual setup is:
 
 ```bash
 git clone https://github.com/Djsand/renderproof.git
@@ -18,6 +47,12 @@ node dist/index.js install
 The helper prints commands and JSON without changing anything. Add `--apply`, `--write-project`, or `--write-user` when you want it to modify client config.
 
 ## Codex
+
+One-liner:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- codex
+```
 
 Print the command:
 
@@ -38,6 +73,12 @@ codex mcp add renderproof -- node /absolute/path/to/renderproof/dist/index.js mc
 ```
 
 ## Claude Code
+
+One-liner:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- claude
+```
 
 Print the command:
 
@@ -65,6 +106,12 @@ claude mcp add renderproof -- node /absolute/path/to/renderproof/dist/index.js m
 
 ## Cursor
 
+Run this from the project directory where you want `.cursor/mcp.json` written:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- cursor
+```
+
 Print Cursor config:
 
 ```bash
@@ -84,6 +131,12 @@ This writes:
 ```
 
 ## Cline
+
+One-liner:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- cline
+```
 
 Print Cline config:
 
@@ -107,6 +160,12 @@ You can also paste the JSON through Cline's MCP Servers configuration UI.
 
 ## Windsurf / Cascade
 
+One-liner:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- windsurf
+```
+
 Print Windsurf config:
 
 ```bash
@@ -128,6 +187,12 @@ This writes:
 If your team uses an MCP whitelist, the whitelist server ID must match the key name, usually `renderproof`.
 
 ## Gemini CLI
+
+One-liner:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- gemini
+```
 
 Print Gemini config and command:
 

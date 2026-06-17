@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1
+
+- Added `install.sh` bootstrapper for curl-to-bash one-liner installs.
+- Added one-liner docs for Codex, Claude Code, Cursor, Cline, Windsurf, Gemini CLI, and generic MCP JSON.
+- Added package metadata so the bootstrapper is included in npm package output.
+
 ## 0.4.0
 
 - Added `renderproof install` helper for Codex, Claude Code, Cursor, Windsurf, Cline, Gemini CLI, and generic MCP JSON.
