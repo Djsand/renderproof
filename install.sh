@@ -42,6 +42,11 @@ fi
 need_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
     echo "Missing required command: $1" >&2
+    if [[ "$1" == "node" || "$1" == "npm" || "$1" == "npx" ]]; then
+      echo "Install Node.js 20+ and reopen your terminal." >&2
+      echo "On Windows, prefer the PowerShell installer:" >&2
+      echo '  powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target codex"' >&2
+    fi
     exit 1
   fi
 }

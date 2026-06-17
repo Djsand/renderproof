@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2
+
+- Added native Windows PowerShell bootstrapper `install.ps1`.
+- Added Windows one-liners for Codex, Claude Code, Cursor, Cline, Windsurf, Gemini CLI, and generic MCP JSON.
+- Improved Windows setup docs for missing Node.js PATH issues.
+
 ## 0.4.1
 
 - Added `install.sh` bootstrapper for curl-to-bash one-liner installs.

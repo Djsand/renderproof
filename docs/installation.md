@@ -4,8 +4,16 @@ RenderProof runs as a local stdio MCP server.
 
 ## One-Liner
 
+macOS/Linux/Git Bash:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- codex
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target codex"
 ```
 
 Swap the final target:
@@ -19,6 +27,17 @@ curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh 
 curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- generic
 ```
 
+PowerShell targets:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target claude"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target cursor"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target cline"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target windsurf"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target gemini"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target generic"
+```
+
 The one-liner installs or updates RenderProof in:
 
 ```text
@@ -26,6 +45,12 @@ The one-liner installs or updates RenderProof in:
 ```
 
 Then it runs the matching install helper for the target agent. For `cursor`, the script writes `.cursor/mcp.json` in the directory where you ran the one-liner.
+
+If Windows says `Missing required command: node`, install Node.js 20+ and reopen PowerShell:
+
+```powershell
+winget install OpenJS.NodeJS.LTS
+```
 
 ## Manual Install
 
@@ -54,6 +79,12 @@ One-liner:
 curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- codex
 ```
 
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target codex"
+```
+
 Print the command:
 
 ```bash
@@ -78,6 +109,12 @@ One-liner:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- claude
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target claude"
 ```
 
 Print the command:
@@ -112,6 +149,12 @@ Run this from the project directory where you want `.cursor/mcp.json` written:
 curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- cursor
 ```
 
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target cursor"
+```
+
 Print Cursor config:
 
 ```bash
@@ -136,6 +179,12 @@ One-liner:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- cline
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target cline"
 ```
 
 Print Cline config:
@@ -166,6 +215,12 @@ One-liner:
 curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- windsurf
 ```
 
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target windsurf"
+```
+
 Print Windsurf config:
 
 ```bash
@@ -192,6 +247,12 @@ One-liner:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- gemini
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Djsand/renderproof/main/install.ps1))) -Target gemini"
 ```
 
 Print Gemini config and command:
