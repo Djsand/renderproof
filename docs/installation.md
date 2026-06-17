@@ -91,13 +91,19 @@ Print the command:
 node dist/index.js install codex
 ```
 
-Install it:
+Write Codex config directly:
 
 ```bash
-node dist/index.js install codex --apply
+node dist/index.js install codex --write-user
 ```
 
-Equivalent manual command:
+This writes:
+
+```text
+~/.codex/config.toml
+```
+
+CLI equivalent, if `codex` is in PATH:
 
 ```bash
 codex mcp add renderproof -- node /absolute/path/to/renderproof/dist/index.js mcp

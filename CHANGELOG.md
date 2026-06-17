@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.3
+
+- Changed one-line Codex install to write `~/.codex/config.toml` directly instead of relying on `codex mcp add`.
+- Added Codex `--write-user` support to the install helper.
+- Improved Windows reliability when Codex CLI is not available in PowerShell PATH.
+
 ## 0.4.2
 
 - Added native Windows PowerShell bootstrapper `install.ps1`.

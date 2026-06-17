@@ -96,7 +96,13 @@ export async function runInstallAssistant(options: InstallOptions): Promise<numb
         process.stderr.write(`${plan.title}: --write-user is not supported for this client.\n`);
         return 1;
       }
-      await mergeMcpConfig(plan.userPath, plan.config);
+
+      if (plan.agent === "codex") {
+        await writeCodexConfig(plan.userPath, plan.config);
+      } else {
+        await mergeMcpConfig(plan.userPath, plan.config);
+      }
+
       process.stdout.write(`Wrote ${plan.userPath}\n`);
     }
   }
@@ -114,7 +120,7 @@ export function printInstallHelp(): void {
 Usage:
   renderproof install
   renderproof install all
-  renderproof install codex [--apply]
+  renderproof install codex [--apply|--write-user]
   renderproof install claude [--apply] [--scope local|user|project]
   renderproof install gemini [--apply] [--scope user|project]
   renderproof install cursor [--write-project]
@@ -125,7 +131,7 @@ Usage:
 Options:
   --apply          Run the native CLI install command when supported.
   --write-project  Write project-local JSON config when supported.
-  --write-user     Write user-level JSON config when supported.
+  --write-user     Write user-level config when supported.
   --json           Print only JSON config.
   --name NAME      MCP server name. Defaults to renderproof.
   --entry PATH     Path to dist/index.js. Defaults to this checkout.
@@ -171,13 +177,17 @@ function createPlan(
     return {
       agent,
       title: "Codex",
-      description: "Installs through `codex mcp add`.",
+      description: "Installs through `codex mcp add` or writes Codex config directly.",
       command: {
         command: "codex",
         args: ["mcp", "add", name, "--", server.command, ...server.args]
       },
       config: mcpConfig,
-      notes: ["Restart active Codex threads if the new tools do not appear immediately."]
+      userPath: path.join(process.env.CODEX_HOME ?? path.join(os.homedir(), ".codex"), "config.toml"),
+      notes: [
+        "Use `--write-user` to write Codex config directly when the Codex CLI is not in PATH.",
+        "Restart active Codex threads if the new tools do not appear immediately."
+      ]
     };
   }
 
@@ -322,6 +332,73 @@ async function mergeMcpConfig(filePath: string, config: Record<string, unknown>)
 
   await mkdir(path.dirname(filePath), { recursive: true });
   writeFileSync(filePath, `${JSON.stringify(existing, null, 2)}\n`);
+}
+
+async function writeCodexConfig(filePath: string, config: Record<string, unknown>): Promise<void> {
+  const servers = getObject(config.mcpServers);
+  const entries = Object.entries(servers);
+
+  if (entries.length !== 1) {
+    throw new Error("Expected exactly one Codex MCP server config entry.");
+  }
+
+  const [name, rawServer] = entries[0] as [string, unknown];
+  const server = getObject(rawServer);
+  const command = typeof server.command === "string" ? server.command : undefined;
+  const args = Array.isArray(server.args) ? server.args.filter((arg): arg is string => typeof arg === "string") : [];
+
+  if (!command) {
+    throw new Error("Codex MCP server config requires a command.");
+  }
+
+  const sectionHeader = `[mcp_servers.${tomlKey(name)}]`;
+  const block = [
+    sectionHeader,
+    `command = ${tomlString(command)}`,
+    `args = [${args.map(tomlString).join(", ")}]`,
+    ""
+  ].join("\n");
+  const existing = existsSync(filePath) ? readFileSync(filePath, "utf8") : "";
+  const withoutExistingBlock = removeTomlSection(existing, sectionHeader);
+  const nextContent = `${withoutExistingBlock.trimEnd()}${withoutExistingBlock.trim() ? "\n\n" : ""}${block}`;
+
+  await mkdir(path.dirname(filePath), { recursive: true });
+  writeFileSync(filePath, nextContent);
+}
+
+function removeTomlSection(content: string, sectionHeader: string): string {
+  const lines = content.split(/\r?\n/);
+  const nextLines: string[] = [];
+  const childSectionPrefix = `${sectionHeader.slice(0, -1)}.`;
+  let skipping = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const isTargetSection = trimmed === sectionHeader || trimmed.startsWith(childSectionPrefix);
+
+    if (isTargetSection) {
+      skipping = true;
+      continue;
+    }
+
+    if (skipping && /^\[.+\]\s*$/.test(trimmed)) {
+      skipping = false;
+    }
+
+    if (!skipping) {
+      nextLines.push(line);
+    }
+  }
+
+  return nextLines.join("\n");
+}
+
+function tomlKey(value: string): string {
+  return /^[A-Za-z0-9_-]+$/.test(value) ? value : tomlString(value);
+}
+
+function tomlString(value: string): string {
+  return JSON.stringify(value);
 }
 
 function readJsonObject(filePath: string): Record<string, unknown> {

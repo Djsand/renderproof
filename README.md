@@ -105,6 +105,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create
 
 Swap `codex` for `claude`, `cursor`, `cline`, `windsurf`, `gemini`, or `generic`.
 
+The `codex` target writes directly to `~/.codex/config.toml`, so it works even when the Codex CLI is not available in your terminal PATH.
+
 If Windows says `Missing required command: node`, install Node.js 20+ and reopen PowerShell:
 
 ```powershell
@@ -151,7 +153,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create
 Local helper equivalents:
 
 ```bash
-node dist/index.js install codex --apply
+node dist/index.js install codex --write-user
 node dist/index.js install claude --apply
 node dist/index.js install cursor --write-project
 node dist/index.js install cline --write-user
@@ -164,13 +166,21 @@ See [docs/installation.md](docs/installation.md) for agent-specific setup.
 ## Use With Codex
 
 ```bash
-node dist/index.js install codex --apply
+node dist/index.js install codex --write-user
 ```
 
 Manual equivalent:
 
 ```bash
 codex mcp add renderproof -- node /absolute/path/to/renderproof/dist/index.js mcp
+```
+
+Direct config equivalent:
+
+```toml
+[mcp_servers.renderproof]
+command = "node"
+args = ["/absolute/path/to/renderproof/dist/index.js", "mcp"]
 ```
 
 ## Use With Claude Code

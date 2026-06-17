@@ -19,7 +19,7 @@ Usage:
   curl -fsSL https://raw.githubusercontent.com/Djsand/renderproof/main/install.sh | bash -s -- codex
 
 Targets:
-  codex       Install into Codex with codex mcp add
+  codex       Write Codex config to ~/.codex/config.toml
   claude      Install into Claude Code with claude mcp add
   cursor      Write .cursor/mcp.json in the directory where you ran the one-liner
   cline       Write ~/.cline/mcp.json
@@ -84,7 +84,7 @@ ENTRY="$RENDERPROOF_HOME/dist/index.js"
 
 case "$TARGET" in
   codex)
-    node "$ENTRY" install codex --apply --entry "$ENTRY" "$@"
+    node "$ENTRY" install codex --write-user --entry "$ENTRY" "$@"
     ;;
   claude)
     node "$ENTRY" install claude --apply --entry "$ENTRY" "$@"
