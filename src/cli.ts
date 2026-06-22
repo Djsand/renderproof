@@ -1,4 +1,5 @@
 import { captureMotion, capturePage } from "./core/browser.js";
+import { cloneWebsite } from "./core/cloneWebsite.js";
 import { getRuntimeConfig } from "./core/config.js";
 import { doctor } from "./core/doctor.js";
 import { printInstallHelp, runInstallAssistant, type InstallAgent, type InstallMode } from "./core/install.js";
@@ -162,6 +163,41 @@ export async function runCli(args: string[]): Promise<number> {
       return 0;
     }
 
+    if (command === "clone-website" || command === "clone") {
+      const { positional, flags } = parseArgs(rest);
+      const url = positional[0];
+      if (!url) {
+        throw new Error("clone-website requires a URL.");
+      }
+      const result = await cloneWebsite(
+        {
+          url,
+          outputDir: stringFlag(flags["output-dir"]),
+          downloadAssets: flags["no-assets"] ? false : booleanFlag(flags["download-assets"]),
+          includeSectionScreenshots: flags["no-section-screenshots"] ? false : booleanFlag(flags["section-screenshots"]),
+          desktopWidth: numberFlag(flags["desktop-width"]),
+          desktopHeight: numberFlag(flags["desktop-height"]),
+          mobileWidth: numberFlag(flags["mobile-width"]),
+          mobileHeight: numberFlag(flags["mobile-height"]),
+          waitUntil: stringFlag(flags["wait-until"]) as "load" | "domcontentloaded" | "networkidle" | undefined,
+          timeoutMs: numberFlag(flags.timeout),
+          settleMs: numberFlag(flags.settle),
+          maxSections: numberFlag(flags["max-sections"]),
+          maxElementsPerSection: numberFlag(flags["max-elements-per-section"]),
+          maxAssets: numberFlag(flags["max-assets"]),
+          maxAssetBytes: numberFlag(flags["max-asset-bytes"]),
+          autoScroll: flags["no-auto-scroll"] ? false : booleanFlag(flags["auto-scroll"]),
+          scrollStepPx: numberFlag(flags["scroll-step"]),
+          scrollDelayMs: numberFlag(flags["scroll-delay"]),
+          scrollMaxSteps: numberFlag(flags["scroll-max-steps"]),
+          allowPrivateNetwork: booleanFlag(flags["allow-private-network"])
+        },
+        config
+      );
+      writeJson(ok(result.data, result.evidence));
+      return 0;
+    }
+
     if (command === "doctor") {
       const { flags } = parseArgs(rest);
       const result = await doctor({ checkBrowserLaunch: booleanFlag(flags["check-browser-launch"]) }, config);
@@ -186,6 +222,7 @@ Usage:
   renderproof capture https://example.com [--full-page] [--auto-scroll]
   renderproof motion https://example.com [--duration 5000] [--keyframes true] [--scroll]
   renderproof analyze-motion https://example.com [--duration 3000] [--samples 5] [--scroll]
+  renderproof clone-website https://example.com [--no-assets] [--max-sections 24]
   renderproof doctor [--check-browser-launch]
   renderproof install [all|codex|claude|cursor|windsurf|cline|gemini|generic]
 

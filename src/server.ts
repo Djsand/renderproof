@@ -3,6 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 
 import { captureMotion, capturePage } from "./core/browser.js";
+import { cloneWebsite } from "./core/cloneWebsite.js";
 import { getRuntimeConfig } from "./core/config.js";
 import { doctor } from "./core/doctor.js";
 import { analyzeMotion } from "./core/motionAnalysis.js";
@@ -349,6 +350,83 @@ export async function startMcpServer(): Promise<void> {
 
       return { content } as never;
     }
+  );
+
+  server.registerTool(
+    "clone_website",
+    {
+      title: "Clone Website",
+      description:
+        "Generate a clone-ready evidence bundle for a public website: desktop/mobile screenshots, design tokens, assets, page topology, behaviors, and component specs. Use only for legitimate site migration, learning, or authorized rebuilds.",
+      inputSchema: {
+        url: z.string().url().describe("The public http(s) page to reverse-engineer into clone-ready artifacts."),
+        outputDir: z.string().optional().describe("Directory where clone artifacts should be saved."),
+        downloadAssets: z
+          .boolean()
+          .optional()
+          .describe("Download discovered images, favicons, stylesheets, and videos within size limits. Defaults to true."),
+        includeSectionScreenshots: z
+          .boolean()
+          .optional()
+          .describe("Capture per-section screenshots for component specs. Defaults to true."),
+        desktopWidth: z.number().int().min(320).max(3840).optional().describe("Desktop viewport width. Defaults to 1440."),
+        desktopHeight: z.number().int().min(240).max(2160).optional().describe("Desktop viewport height. Defaults to 900."),
+        mobileWidth: z.number().int().min(320).max(1200).optional().describe("Mobile viewport width. Defaults to 390."),
+        mobileHeight: z.number().int().min(240).max(2160).optional().describe("Mobile viewport height. Defaults to 844."),
+        waitUntil: z
+          .enum(["load", "domcontentloaded", "networkidle"])
+          .optional()
+          .describe("Navigation wait condition. Defaults to networkidle."),
+        timeoutMs: z.number().int().min(1000).max(120000).optional().describe("Navigation and screenshot timeout."),
+        settleMs: z
+          .number()
+          .int()
+          .min(0)
+          .max(10000)
+          .optional()
+          .describe("Extra delay after navigation before extraction. Defaults to 500 ms."),
+        maxSections: z.number().int().min(1).max(80).optional().describe("Maximum page sections to spec. Defaults to 24."),
+        maxElementsPerSection: z
+          .number()
+          .int()
+          .min(10)
+          .max(500)
+          .optional()
+          .describe("Maximum DOM outline nodes per section spec. Defaults to 80."),
+        maxAssets: z.number().int().min(0).max(300).optional().describe("Maximum assets to download. Defaults to 60."),
+        maxAssetBytes: z
+          .number()
+          .int()
+          .min(1024)
+          .max(52428800)
+          .optional()
+          .describe("Maximum bytes per downloaded asset. Defaults to 10 MiB."),
+        autoScroll: z
+          .boolean()
+          .optional()
+          .describe("Scroll through the page before extraction to trigger lazy-loaded content. Defaults to true."),
+        scrollStepPx: z.number().int().min(100).max(8000).optional().describe("Pixels to scroll per step when auto-scrolling."),
+        scrollDelayMs: z
+          .number()
+          .int()
+          .min(0)
+          .max(5000)
+          .optional()
+          .describe("Delay between auto-scroll steps in milliseconds."),
+        scrollMaxSteps: z.number().int().min(1).max(200).optional().describe("Maximum number of auto-scroll steps."),
+        allowPrivateNetwork: z
+          .boolean()
+          .optional()
+          .describe("Allow localhost/private network URLs for this call. Defaults to false.")
+      }
+    },
+    async (input) =>
+      jsonToolResult(
+        await asyncOkResult(async () => {
+          const result = await cloneWebsite(input, config);
+          return ok(result.data, result.evidence);
+        })
+      )
   );
 
   server.registerTool(

@@ -25,6 +25,8 @@ export function routeWebTask(input: RouteWebTaskInput): {
     /\b(see|look|visual|screenshot|layout|pixel|image|photo|chart|graph|canvas|webgl|map|color|overlap|render)\b/.test(
       task
     );
+  const isClone =
+    /\b(clone|copy|recreate|rebuild|replicate|reverse-engineer|reverse engineer|pixel-perfect|site like|website like)\b/.test(task);
   const isMotion =
     /\b(animation|animated|motion|transition|easing|parallax|scroll-driven|microinteraction|carousel|spinner|loading state)\b/.test(
       task
@@ -37,7 +39,20 @@ export function routeWebTask(input: RouteWebTaskInput): {
 
   let recommendation: RouteRecommendation;
 
-  if (isMotion) {
+  if (isClone) {
+    recommendation = {
+      primaryRoute: "clone_website",
+      confidence: "high",
+      reason:
+        "The task asks to clone or rebuild a website, so it needs screenshots, design tokens, assets, topology, behaviors, and component specs.",
+      suggestedTools: ["clone_website", "capture_page", "analyze_motion"],
+      escalationPolicy: [
+        "Generate a clone brief with desktop/mobile screenshots and component specs.",
+        "Use motion analysis for sections where animation fidelity matters.",
+        "Use interactive browser automation for hidden click or hover states that need deeper inspection."
+      ]
+    };
+  } else if (isMotion) {
     recommendation = {
       primaryRoute: "analyze_motion",
       confidence: "high",
@@ -133,7 +148,7 @@ export function routeWebTask(input: RouteWebTaskInput): {
         details: {
           task: input.task,
           host,
-          signals: { isVisual, isMotion, isInteractive, isSearch, isVideo, isGitHub }
+          signals: { isVisual, isClone, isMotion, isInteractive, isSearch, isVideo, isGitHub }
         }
       }
     ]

@@ -23,6 +23,7 @@ RenderProof gives agents a grounded visual evidence layer before they make claim
 | `capture_page` | Layout, gates, rendered state, canvas, images, maps, PDFs-as-browser-state, or visual QA matter | PNG screenshot + metadata |
 | `capture_motion` | A human needs to see animation, loading, scroll, transitions, or media motion | WebM video + keyframe PNGs |
 | `analyze_motion` | A coding agent needs to recreate or critique motion | Contact sheet, diff image, CSS animation metadata, pixel-diff JSON, design notes |
+| `clone_website` | A coding agent needs to rebuild an authorized website or study how a page is put together | Clone brief, desktop/mobile screenshots, design tokens, assets, topology, behaviors, component specs |
 | `doctor` | You want to verify local runtime/browser setup | Runtime and Playwright checks |
 
 ## The Core Idea
@@ -34,10 +35,12 @@ flowchart LR
   B --> D["capture_page"]
   B --> E["capture_motion"]
   B --> F["analyze_motion"]
+  B --> H["clone_website"]
   C --> G["Grounded answer"]
   D --> G
   E --> G
   F --> G
+  H --> G
 ```
 
 RenderProof makes the expensive path explicit: read text first when text is enough, escalate to rendered evidence when pixels matter.
@@ -58,6 +61,10 @@ Use RenderProof to check what the browser actually sees on this Instagram/TikTok
 
 ```text
 Use RenderProof to capture visual evidence before claiming whether this page is blocked by a consent wall, login wall, CAPTCHA, or skeleton loader.
+```
+
+```text
+Use RenderProof clone_website on https://example.com and give me the clone brief paths for a Next.js rebuild.
 ```
 
 ## Motion Analysis
@@ -88,6 +95,23 @@ Example design notes:
 ```
 
 That is the difference between "there is an animation" and "recreate this with transform, 1200ms, ease-in-out, alternate, moving right while scaling."
+
+## Website Clone Briefs
+
+`clone_website` turns a live rendered page into clone-ready artifacts for an AI coding workflow. It is inspired by section-by-section website reverse-engineering templates: inspect first, write durable specs, then build from those specs.
+
+It writes a local bundle under `.renderproof/evidence/clones/`:
+
+- `research/CLONE_BRIEF.md`
+- `research/DESIGN_TOKENS.md`
+- `research/PAGE_TOPOLOGY.md`
+- `research/BEHAVIORS.md`
+- `research/components/*.spec.md`
+- `design-references/desktop-*.png`
+- `design-references/mobile-*.png`
+- downloaded assets, capped by `maxAssets` and `maxAssetBytes`
+
+The output is not a completed app. It is the extraction layer a coding agent needs before rebuilding: exact rendered references, computed CSS signals, real text, asset paths, interaction hints, and responsive evidence.
 
 ## Install
 
@@ -204,6 +228,7 @@ npm run dev -- capture https://example.com --full-page
 npm run dev -- capture https://example.com --full-page --auto-scroll
 npm run dev -- motion https://example.com --duration 5000 --keyframes true
 npm run dev -- analyze-motion https://example.com --duration 3000 --samples 5
+npm run dev -- clone-website https://example.com --max-sections 24
 npm run dev -- install generic --json
 npm run doctor
 ```
@@ -220,6 +245,7 @@ By default, it:
 - does not solve CAPTCHA
 - does not hide automation
 - does not click through consent, login, or payment walls
+- does not use clone outputs for phishing, impersonation, or unauthorized reproduction
 - returns structured failures instead of pretending a page was accessible
 
 Environment controls:
@@ -244,6 +270,7 @@ Legacy `GROUNDED_WEB_*` variables are still supported for compatibility.
 - Recording short WebM motion evidence for humans
 - Turning animation into agent-readable CSS and pixel-diff evidence
 - Creating auditable local evidence files for coding workflows
+- Generating clone briefs for authorized rebuilds, migrations, and learning
 
 ## What It Will Not Do
 
@@ -251,6 +278,7 @@ Legacy `GROUNDED_WEB_*` variables are still supported for compatibility.
 - scrape social platforms as a data product
 - replace Playwright MCP for interactive browser control
 - guarantee semantic object tracking from pixel diffs alone
+- produce a finished application from a clone brief without a coding agent doing the build and QA
 
 Playwright is the engine. RenderProof is the evidence layer.
 
@@ -273,7 +301,7 @@ npm run dev -- doctor --check-browser-launch
 
 - PDF rendering and text extraction
 - page-state detection for consent/login/CAPTCHA/skeleton/download/blank-page states
-- style-reference capture for "build me a site like this" workflows
+- visual diff scoring for clone QA workflows
 - safe user-provided auth/session support
 - evidence bundle manifests
 - optional interaction sequences with before/after evidence

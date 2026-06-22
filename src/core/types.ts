@@ -3,11 +3,12 @@ export type RouteName =
   | "capture_page"
   | "capture_motion"
   | "analyze_motion"
+  | "clone_website"
   | "external_search"
   | "external_platform_tool"
   | "browser_interaction";
 
-export type EvidenceKind = "route" | "read" | "screenshot" | "motion" | "motion_analysis" | "doctor";
+export type EvidenceKind = "route" | "read" | "screenshot" | "motion" | "motion_analysis" | "clone" | "doctor";
 
 export interface Evidence {
   kind: EvidenceKind;

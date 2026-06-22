@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added `clone_website` MCP tool and `renderproof clone-website` CLI command for clone-ready evidence bundles.
+- The clone workflow captures desktop/mobile screenshots, design tokens, page topology, behavior hints, per-section specs, and capped asset downloads.
+- Updated routing so clone/rebuild/reverse-engineering tasks recommend the clone workflow.
+
 ## 0.4.5
 
 - Reworked the Windows installer to run native commands inside scriptblocks so PowerShell cannot bind native flags as function parameters.
